@@ -11,16 +11,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Monitor BTC and notify
         env:
           COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
-          COMPOSIO_API_URL: ${{ secrets.COMPOSIO_API_URL }}
-          COMPOSIO_GMAIL_ACTION: ${{ secrets.COMPOSIO_GMAIL_ACTION }}
-          COMPOSIO_TELEGRAM_ACTION: ${{ secrets.COMPOSIO_TELEGRAM_ACTION }}
+          GMAIL_CONNECTED_ACCOUNT_ID: ${{ secrets.GMAIL_CONNECTED_ACCOUNT_ID }}
+          GMAIL_RECIPIENT: ${{ secrets.GMAIL_RECIPIENT }}
+          TELEGRAM_CONNECTED_ACCOUNT_ID: ${{ secrets.TELEGRAM_CONNECTED_ACCOUNT_ID }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python monitor.py
