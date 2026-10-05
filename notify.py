@@ -8,10 +8,15 @@ def execute_tool(api_key: str, slug: str, connected_account_id: str, arguments: 
     r = requests.post(
         f"{COMPOSIO_URL}/{slug}",
         headers={"x-api-key": api_key, "Content-Type": "application/json"},
-        json={"connected_account_id": connected_account_id, "arguments": arguments},
+        json={"connected_account_id": connected_account_id, "version": "latest", "arguments": arguments},
         timeout=45,
     )
-    r.raise_for_status()
+    if not r.ok:
+        try:
+            detail = r.json()
+        except ValueError:
+            detail = r.text
+        raise RuntimeError(f"Composio {slug} HTTP {r.status_code}: {detail}")
     payload = r.json()
     if payload.get("successful") is False:
         raise RuntimeError(f"Composio {slug} failed: {payload.get('error')}")
