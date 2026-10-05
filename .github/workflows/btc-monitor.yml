@@ -1,0 +1,26 @@
+name: Bitcoin monitor every 2 hours
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */2 * * *'
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Monitor BTC and notify
+        env:
+          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
+          COMPOSIO_API_URL: ${{ secrets.COMPOSIO_API_URL }}
+          COMPOSIO_GMAIL_ACTION: ${{ secrets.COMPOSIO_GMAIL_ACTION }}
+          COMPOSIO_TELEGRAM_ACTION: ${{ secrets.COMPOSIO_TELEGRAM_ACTION }}
+        run: python monitor.py
